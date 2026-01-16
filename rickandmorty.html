@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="rickandmorty.css">
+        <link rel="icon" href="https://rickandmortyapi.com/icons/icon-512x512.png" type="image/png">
+        <title>Rick And Morty</title>
+    </head>
+    <body>
+        <header class="siteHeader">
+            <img src="http://bit.ly/3NmvK3R" alt="rick and morty">
+        </header>
+        <main class="mainContent">
+            <section class="cardsContainer">
+            </section>
+            <nav class="pagination">
+                <button class="paginationButton" onclick="firstPage()">&#8676</button>
+                <button class="paginationButton" onclick="prev()">&#8592</button>
+                <div class="pages">  
+                </div>
+                <button class="paginationButton" onclick="next()">&#8594</button>
+                <button class="paginationButton" onclick="lastPage()">&#8677</button>
+            </nav>
+        </main>
+        <script src="rickandmorty.js"></script>
+    </body>
+</html>
