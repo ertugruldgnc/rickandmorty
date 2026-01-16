@@ -1,0 +1,110 @@
+:root {
+    /* Theme */
+    --backgroundColor: beige;
+    --contentColor: rgb(38, 160, 189);
+    --cardsColor: rgb(38, 160, 189);
+    --shadowColor: rgb(155, 247, 108);
+    --borderColor: lightgray;
+    --textColor: white;
+
+    /* Dimensions */
+    --xsRadius: 4px;
+    --smRadius: 8px;
+    --mdRadius: 12px;
+    --smSpacing: 8px;
+    --mdSpacing: 12px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: var(--backgroundColor);
+}
+
+.siteHeader {
+    position: sticky;
+    top: 0;
+    z-index: 0;
+    display: flex;
+    justify-content: center;
+    padding: 60px;
+}
+
+.mainContent {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    position: relative;
+    z-index: 1;
+    flex-grow: 1;
+    background-color: var(--contentColor);
+    border-radius: var(--mdRadius) var(--mdRadius) 0px 0px;
+}
+
+.cardsContainer{
+    display: grid;
+    grid-template-columns: repeat(4, calc(300px + (4 * var(--mdSpacing))));
+}
+
+.card {
+    margin: var(--mdSpacing);
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    gap: var(--mdSpacing);
+    padding: var(--mdSpacing);
+    background-color: var(--cardsColor);
+    color: var(--textColor);
+    border-width: 2px;
+    border-style: solid;
+    border-color: var(--borderColor);
+    border-radius: var(--smRadius);
+    transition: all 0.1s ease;
+}
+
+.card:hover {
+    transform: scale(1.01);
+    box-shadow: 0 0 15px 2px var(--shadowColor);
+}
+
+.imgBox {
+    width: 300px;
+    height: 300px;
+    overflow: hidden;
+    border-radius: var(--xsRadius);
+}
+
+.imgBox img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.pagination{
+    display: flex;
+    flex-direction: row;
+    margin: var(--mdSpacing);
+}
+
+.paginationButton{
+    background-color: beige;
+    width: 50px;
+    height: 50px;
+    border-style: none;
+}
+
+.paginationButton:active{
+    background-color: rgb(187, 187, 168);
+}
+
+.pages{
+    display: flex;
+    flex-direction: row;
+}
