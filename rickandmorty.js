@@ -3,15 +3,12 @@ let characterList = [];
 const cardsContainer = document.querySelector('.cardsContainer');
 const pages = document.querySelector('.pages');
 let activePage = 0;
+let totalCharacters = 0;
 
-function clearContent() {
-    cardsContainer.innerHTML = "";
-    pages.innerHTML = "";
-}
-
-function displayCharacters(characterList){
+function displayCharacters(characterList) {
     characterList[activePage].forEach(item => {   
         const card = document.createElement("article");
+        const cardLink = document.createElement("a");
         const imgBox = document.createElement("div");
         const nameBox = document.createElement("div");
         const statusBox = document.createElement("div");
@@ -23,6 +20,7 @@ function displayCharacters(characterList){
         const speciesHeader = document.createElement("h3");
         const species = document.createElement("p");
         card.className = "card";
+        cardLink.href = `features.html?id=${item.id}`;
         imgBox.className = "imgBox";
         nameBox.className = "nameBox";
         statusBox.className ="statusBox";
@@ -34,26 +32,30 @@ function displayCharacters(characterList){
         status.textContent = item.status;
         speciesHeader.textContent = "Species";
         species.textContent = item.species;
-        imgBox.appendChild(img)
-        nameBox.appendChild(name)
-        statusBox.append(statusHeader, status)
-        speciesBox.append(speciesHeader, species)
-        card.append(imgBox, nameBox, statusBox, speciesBox)
-        cardsContainer.appendChild(card)
+        imgBox.appendChild(img);
+        nameBox.appendChild(name);
+        statusBox.append(statusHeader, status);
+        speciesBox.append(speciesHeader, species);
+        card.append(imgBox, nameBox, statusBox, speciesBox);
+        cardLink.appendChild(card);
+        cardsContainer.appendChild(cardLink);
     });
 }
 
-function pagination(){
+function pagination() {
     const totalPages = characterList.length;
     let startPage = Math.max(0, activePage - 2);
     let endPage = Math.min(totalPages - 1, startPage + 4);
+
     if (endPage - startPage < 4) {
         startPage = Math.max(0, endPage - 4);
     }
-    for(let i = startPage; i <= endPage; i++){
+
+    for(let i = startPage; i <= endPage; i++) {
         const pageButton = document.createElement("button");
         pageButton.className = "paginationButton";
         pageButton.textContent = i + 1;
+
         pageButton.addEventListener('click', () => {
             activePage = i;
             renderUI();
@@ -64,29 +66,40 @@ function pagination(){
 
 async function getData() {
     let group = []
-    while(apiUrl){
+
+    while(apiUrl) {
         const response = await fetch(apiUrl);
         const data = await response.json();
+        totalCharacters = data.info.count;
+
         data.results.forEach(item => {
             const character = {
+                id: item.id,
                 imgUrl: item.image,
                 name: item.name,
                 status: item.status,
                 species: item.species
             };
             group.push(character);
-            if(group.length === 12){
+
+            if(group.length === 12) {
                 characterList.push(group);
                 group = []
             }
         });
         apiUrl = data.info.next;
     }
-    if(group.length > 0){
+
+    if(group.length > 0) {
         characterList.push(group);
     }
-    displayCharacters(characterList)
-    pagination()
+    displayCharacters(characterList);
+    pagination();
+}
+
+function clearContent() {
+    cardsContainer.innerHTML = "";
+    pages.innerHTML = "";
 }
 
 function renderUI() {
@@ -101,18 +114,18 @@ function firstPage() {
 }
 
 function lastPage() {
-    activePage = characterList.length - 1;
+    activePage = Math.ceil(totalCharacters/12) - 1;
     renderUI();
 }
 
 function prev(){
-    activePage = Math.max(activePage - 1, 0)
+    activePage = Math.max(activePage - 1, 0);
     renderUI();
 }
 
 function next(){
-    activePage = Math.min(activePage + 1, characterList.length - 1)
+    activePage = Math.min(activePage + 1, Math.ceil(totalCharacters/12) - 1);
     renderUI();
 }
 
-getData()
+getData();
