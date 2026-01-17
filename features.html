@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="rickandmorty.css">
+        <link rel="icon" href="https://rickandmortyapi.com/icons/icon-512x512.png" type="image/png">
+        <title>Rick And Morty</title>
+    </head>
+    <body>
+        <header class="siteHeader">
+            <a href="rickandmorty.html">
+                <img src="http://bit.ly/3NmvK3R" alt="rick and morty">
+            </a>
+        </header>
+        <main class="mainContent">
+            <section class="featuresContainer">
+                <article class="features">
+                    <div class="imgBox">
+                        <img class="img" alt="Character Image">
+                    </div>
+                    <div class="nameBox">
+                        <h2 class="name"></h2>
+                    </div>
+                    <div class="statusBox">
+                        <h3>Status</h3>
+                        <p class="status"></p>
+                    </div>
+                    <div class="speciesBox">
+                        <h3>Species</h3>
+                        <p class="species"></p>
+                    </div>
+                </article>
+                <article class="episodes">
+                    <h3>Episodes</h3>
+                    <ul class="episodeList">
+                    </ul>
+                </article>
+            </section>
+            <nav class="pagination">
+                <button class="paginationButton" onclick="prevCharacter()">&#8592</button>
+                <button class="paginationButton" onclick="nextCharacter()">&#8594</button>
+            </nav>
+        </main>
+        <script src="features.js"></script>
+    </body>
+</html>
