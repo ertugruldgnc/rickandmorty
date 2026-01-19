@@ -1,131 +1,134 @@
-let apiUrl = "https://rickandmortyapi.com/api/character";
-let characterList = []; 
-const cardsContainer = document.querySelector('.cardsContainer');
-const pages = document.querySelector('.pages');
-let activePage = 0;
-let totalCharacters = 0;
+import * as Main from './main.js';
 
-function displayCharacters(characterList) {
-    characterList[activePage].forEach(item => {   
-        const card = document.createElement("article");
-        const cardLink = document.createElement("a");
-        const imgBox = document.createElement("div");
-        const nameBox = document.createElement("div");
-        const statusBox = document.createElement("div");
-        const speciesBox = document.createElement("div");
-        const img = document.createElement("img");
-        const name = document.createElement("h2");
-        const statusHeader = document.createElement("h3");
-        const status = document.createElement("p");
-        const speciesHeader = document.createElement("h3");
-        const species = document.createElement("p");
-        card.className = "card";
+const cardsContainer = document.querySelector('.cardsContainer');
+const firstButton = document.querySelector('#firstButton');
+const prevButton = document.querySelector('#prevButton');
+const nextButton = document.querySelector('#nextButton');
+const lastButton = document.querySelector('#lastButton');
+const pages = document.querySelector('.pages');
+
+let activePage = 1;
+let fetchingIds = [];
+
+async function getData() {
+    fetchingIds = [];
+
+    const firstCharacterOfPage = activePage * 12 - 11;
+    const lastCharacterOfPage = firstCharacterOfPage + 11;
+
+    for(let i = firstCharacterOfPage; i <= lastCharacterOfPage; i ++) {
+        fetchingIds.push(i);
+    }
+
+    const response = await fetch(Main.apiUrl + String(fetchingIds));
+    const data = await response.json();
+
+    Main.displayNone(Main.loadingState);
+    Main.displayFlex(Main.paginationBox);
+    renderCards(data);
+    pagination();
+}
+
+function renderCards(data){
+    Main.clearContent(cardsContainer);
+
+    data.forEach(item => {
+        const cardLink = document.createElement('a');
+        const card = document.createElement('article');
+        const imageBox = document.createElement('div');
+        const nameBox = document.createElement('div');
+        const statusBox = document.createElement('div');
+        const speciesBox = document.createElement('div');
+        const characterImg = document.createElement('img');
+        const characterName = document.createElement('h2');
+        const characterStatusHeader = document.createElement('h3');
+        const characterStatus = document.createElement('p');
+        const characterSpeciesHeader = document.createElement('h3');
+        const characterSpecies = document.createElement('p');
+
         cardLink.href = `features.html?id=${item.id}`;
-        imgBox.className = "imgBox";
+        card.className = "card";
+        imageBox.className = "imgBox";
         nameBox.className = "nameBox";
-        statusBox.className ="statusBox";
+        statusBox.className = "statusBox";
         speciesBox.className = "speciesBox";
-        img.src = item.imgUrl;
-        img.alt = "character image";
-        name.textContent = item.name;
-        statusHeader.textContent = "Status";
-        status.textContent = item.status;
-        speciesHeader.textContent = "Species";
-        species.textContent = item.species;
-        imgBox.appendChild(img);
-        nameBox.appendChild(name);
-        statusBox.append(statusHeader, status);
-        speciesBox.append(speciesHeader, species);
-        card.append(imgBox, nameBox, statusBox, speciesBox);
+
+        characterImg.src = item.image;
+        characterName.textContent = item.name;
+        characterStatusHeader.textContent = "Status";
+        characterStatus.textContent = item.status;
+        characterSpeciesHeader.textContent = "Species";
+        characterSpecies.textContent = item.species;
+
+        imageBox.appendChild(characterImg);
+        nameBox.appendChild(characterName);
+        statusBox.appendChild(characterStatus);
+        speciesBox.appendChild(characterSpecies);
+        card.append(imageBox, nameBox, statusBox, speciesBox);
         cardLink.appendChild(card);
         cardsContainer.appendChild(cardLink);
     });
 }
 
 function pagination() {
-    const totalPages = characterList.length;
-    let startPage = Math.max(0, activePage - 2);
-    let endPage = Math.min(totalPages - 1, startPage + 4);
+    Main.clearContent(pages);
 
-    if (endPage - startPage < 4) {
-        startPage = Math.max(0, endPage - 4);
+    let firstButtonNumber = 1;
+
+     if (Main.lastPageNumber - activePage < 2) {
+        firstButtonNumber = Main.lastPageNumber - 4;
+    } else if (activePage > 3) {
+        firstButtonNumber = Math.max(0, activePage - 2);
     }
 
-    for(let i = startPage; i <= endPage; i++) {
-        const pageButton = document.createElement("button");
+    for(let i = firstButtonNumber; i < (firstButtonNumber + 5); i++) {
+        const pageButton = document.createElement('button');
         pageButton.className = "paginationButton";
-        pageButton.textContent = i + 1;
+        pageButton.textContent = i;
 
         pageButton.addEventListener('click', () => {
             activePage = i;
-            renderUI();
+            Main.clearContent(cardsContainer);
+            Main.displayNone(Main.paginationBox);
+            Main.displayFlex(Main.loadingState);
+            getData();
         });
+
         pages.appendChild(pageButton);
     }
 }
 
-async function getData() {
-    let group = []
-
-    while(apiUrl) {
-        const response = await fetch(apiUrl);
-        const data = await response.json();
-        totalCharacters = data.info.count;
-
-        data.results.forEach(item => {
-            const character = {
-                id: item.id,
-                imgUrl: item.image,
-                name: item.name,
-                status: item.status,
-                species: item.species
-            };
-            group.push(character);
-
-            if(group.length === 12) {
-                characterList.push(group);
-                group = []
-            }
-        });
-        apiUrl = data.info.next;
-    }
-
-    if(group.length > 0) {
-        characterList.push(group);
-    }
-    displayCharacters(characterList);
-    pagination();
-}
-
-function clearContent() {
-    cardsContainer.innerHTML = "";
-    pages.innerHTML = "";
-}
-
-function renderUI() {
-    clearContent();
-    displayCharacters(characterList);
-    pagination();
-}
-
 function firstPage() {
-    activePage = 0;
-    renderUI();
+    activePage = 1;
+    getData();
 }
 
 function lastPage() {
-    activePage = Math.ceil(totalCharacters/12) - 1;
-    renderUI();
+    activePage = Main.lastPageNumber;
+    getData();
+
 }
 
-function prev(){
-    activePage = Math.max(activePage - 1, 0);
-    renderUI();
+function prev( ){
+    if(activePage == 1) {
+        alert("this is first page");
+    } else {
+        activePage = activePage - 1;
+        getData();
+    }
 }
 
-function next(){
-    activePage = Math.min(activePage + 1, Math.ceil(totalCharacters/12) - 1);
-    renderUI();
+function next() {
+    if(activePage == Main.lastPageNumber) {
+        alert("this is last page");
+    } else {
+    activePage = activePage + 1;
+    getData()}
 }
+
+firstButton.addEventListener("click", firstPage);
+prevButton.addEventListener("click", prev);
+nextButton.addEventListener("click", next);
+lastButton.addEventListener("click", lastPage);
 
 getData();
