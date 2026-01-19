@@ -5,6 +5,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="rickandmorty.css">
         <link rel="icon" href="https://rickandmortyapi.com/icons/icon-512x512.png" type="image/png">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap" rel="stylesheet">
         <title>Rick And Morty</title>
     </head>
     <body>
@@ -12,17 +15,21 @@
             <img src="http://bit.ly/3NmvK3R" alt="rick and morty">
         </header>
         <main class="mainContent">
+            <section class="loadingState">
+                <h2>loading</h2>
+                <div class="spin"></div>
+            </section>
             <section class="cardsContainer">
             </section>
             <nav class="pagination">
-                <button class="paginationButton" onclick="firstPage()">&#8676</button>
-                <button class="paginationButton" onclick="prev()">&#8592</button>
+                <button class="paginationButton" id="firstButton">&#8676</button>
+                <button class="paginationButton" id="prevButton">&#8592</button>
                 <div class="pages">  
                 </div>
-                <button class="paginationButton" onclick="next()">&#8594</button>
-                <button class="paginationButton" onclick="lastPage()">&#8677</button>
+                <button class="paginationButton" id="nextButton">&#8594</button>
+                <button class="paginationButton" id="lastButton">&#8677</button>
             </nav>
         </main>
-        <script src="rickandmorty.js"></script>
+        <script type="module" src="rickandmorty.js"></script>
     </body>
 </html>
