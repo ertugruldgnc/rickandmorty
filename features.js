@@ -1,36 +1,26 @@
-let apiUrl = "https://rickandmortyapi.com/api/character";
+import * as Main from './main.js';
+
 let urlParams = new URLSearchParams(window.location.search);
-let characterId = urlParams.get('id'); 
+let characterId = urlParams.get('id');
+
 const featuresContainer = document.querySelector('.featuresContainer')
 const characterImg = document.querySelector('.img');
 const characterName = document.querySelector('.name');
 const characterStatus = document.querySelector('.status');
 const characterSpecies = document.querySelector('.species');
 const episodeList = document.querySelector('.episodeList');
-let episodes = [];
-let totalCharacters = 0;
-
-async function totalCharacterNumber() {
-    const response = await fetch(apiUrl);
-    const data = await response.json();
-    totalCharacters = data.info.count;
-}
-
-function clearContent(){
-    characterImg.src = ""; 
-    characterName.textContent = "";
-    characterStatus.textContent = "";
-    characterSpecies.textContent = "";
-    episodeList.innerHTML = "";
-}
+const prevCharacterButton = document.querySelector('#prevCharacterButton')
+const nextCharacterButton = document.querySelector('#nextCharacterButton')
 
 async function getEpisodes(link) {
     const response = await fetch(link);
     const data = await response.json();
+
     const episodeName = data.name;
     const episode = document.createElement('li');
     episode.className = "listElement";
     episode.textContent = episodeName;
+
     episodeList.appendChild(episode);
 }
 
@@ -42,9 +32,19 @@ function displayFeatures(data) {
 }
 
 async function getData() {
-    const response = await fetch(apiUrl + "/" + characterId);
+    const response = await fetch(Main.apiUrl + characterId);
     const data = await response.json();
-    clearContent();
+
+    Main.clearContent(characterImg);
+    Main.clearContent(characterName);
+    Main.clearContent(characterStatus);
+    Main.clearContent(characterSpecies);
+    Main.clearContent(episodeList);
+
+    Main.displayNone(Main.loadingState);
+    Main.displayFlex(featuresContainer);
+    Main.displayFlex(Main.paginationBox);
+
     const episodeLinks = data.episode;
 
     episodeLinks.forEach(item => {
@@ -53,12 +53,9 @@ async function getData() {
     displayFeatures(data);
 }
 
-totalCharacterNumber();
-getData();
+function prevCharacter() {
 
-function prevCharacter(){
-
-    if(Number(characterId) > 1){
+    if(Number(characterId) > 1) {
         urlParams.set('id', Number(characterId) - 1);
         characterId = Number(characterId) - 1;
         window.history.pushState({}, '', '?' + urlParams.toString());
@@ -70,9 +67,9 @@ function prevCharacter(){
     };
 }
 
-function nextCharacter(){
+function nextCharacter() {
 
-    if(Number(characterId) < Number(totalCharacters)){
+    if(Number(characterId) < Number(Main.totalCharacters)){
         urlParams.set('id', Number(characterId) + 1);
         characterId = Number(characterId) + 1;
         window.history.pushState({}, '', '?' + urlParams.toString());
@@ -83,3 +80,8 @@ function nextCharacter(){
         alert("this is last character");
     }
 }
+
+prevCharacterButton.addEventListener("click", prevCharacter);
+nextCharacterButton.addEventListener("click", nextCharacter);
+
+getData()
