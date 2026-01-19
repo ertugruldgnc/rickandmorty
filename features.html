@@ -5,6 +5,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="rickandmorty.css">
         <link rel="icon" href="https://rickandmortyapi.com/icons/icon-512x512.png" type="image/png">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap" rel="stylesheet">
         <title>Rick And Morty</title>
     </head>
     <body>
@@ -14,6 +17,10 @@
             </a>
         </header>
         <main class="mainContent">
+            <section class="loadingState">
+                <h2>loading</h2>
+                <div class="spin"></div>
+            </section>
             <section class="featuresContainer">
                 <article class="features">
                     <div class="imgBox">
@@ -37,11 +44,11 @@
                     </ul>
                 </article>
             </section>
-            <nav class="pagination">
-                <button class="paginationButton" onclick="prevCharacter()">&#8592</button>
-                <button class="paginationButton" onclick="nextCharacter()">&#8594</button>
-            </nav>
+                <nav class="pagination">
+                    <button class="paginationButton" id="prevCharacterButton">&#8592</button>
+                    <button class="paginationButton" id="nextCharacterButton">&#8594</button>
+                </nav>
         </main>
-        <script src="features.js"></script>
+        <script type="module" src="features.js"></script>
     </body>
 </html>
