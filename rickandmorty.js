@@ -78,7 +78,7 @@ function pagination() {
      if (Main.lastPageNumber - activePage < 2) {
         firstButtonNumber = Main.lastPageNumber - 4;
     } else if (activePage > 3) {
-        firstButtonNumber = Math.max(0, activePage - 2);
+        firstButtonNumber = Math.max(1, activePage - 2);
     }
 
     for(let i = firstButtonNumber; i < (firstButtonNumber + 5); i++) {
