@@ -1,7 +1,9 @@
 import * as Main from './main.js';
 
+let episodeUrl = "https://rickandmortyapi.com/api/episode/"
 let urlParams = new URLSearchParams(window.location.search);
 let characterId = urlParams.get('id');
+let episodes = []; 
 
 const featuresContainer = document.querySelector('.featuresContainer')
 const characterImg = document.querySelector('.img');
@@ -12,16 +14,17 @@ const episodeList = document.querySelector('.episodeList');
 const prevCharacterButton = document.querySelector('#prevCharacterButton')
 const nextCharacterButton = document.querySelector('#nextCharacterButton')
 
-async function getEpisodes(link) {
-    const response = await fetch(link);
+async function getEpisodes(episodes) {
+    const response = await fetch(`${episodeUrl}${episodes}`);
     const data = await response.json();
-
-    const episodeName = data.name;
-    const episode = document.createElement('li');
-    episode.className = "listElement";
-    episode.textContent = episodeName;
-
-    episodeList.appendChild(episode);
+    const characterData = [].concat(data);
+    characterData.forEach(item => {
+        const episodeName = item.name;
+        const episode = document.createElement('li');
+        episode.className = "listElement";
+        episode.textContent = episodeName;
+        episodeList.appendChild(episode);
+    });
 }
 
 function displayFeatures(data) {
@@ -33,6 +36,11 @@ function displayFeatures(data) {
 
 async function getData() {
     const response = await fetch(Main.apiUrl + characterId);
+    
+    if(response.status == 404){
+        return
+    }
+    
     const data = await response.json();
 
     Main.clearContent(characterImg);
@@ -46,42 +54,25 @@ async function getData() {
     Main.displayFlex(Main.paginationBox);
 
     const episodeLinks = data.episode;
-
     episodeLinks.forEach(item => {
-        getEpisodes(item); 
+        let linkParts = item.split('/');
+        let episodeID = linkParts.pop();
+        episodes.push(episodeID)
     });
+
+    getEpisodes(episodes);
     displayFeatures(data);
 }
 
-function prevCharacter() {
-
-    if(Number(characterId) > 1) {
-        urlParams.set('id', Number(characterId) - 1);
-        characterId = Number(characterId) - 1;
-        window.history.pushState({}, '', '?' + urlParams.toString());
-        getData();
-    } 
-    
-    else {
-        alert("this is first character");
-    };
+function changeCharacter(direction) {
+    episodes = [];
+    urlParams.set('id', Number(characterId) + direction);
+    characterId = Number(characterId) + direction;
+    window.history.pushState({}, '', '?' + urlParams.toString());
+    getData();
 }
 
-function nextCharacter() {
+prevCharacterButton.addEventListener("click", () => changeCharacter(-1));
+nextCharacterButton.addEventListener("click", () => changeCharacter(1));
 
-    if(Number(characterId) < Number(Main.totalCharacters)){
-        urlParams.set('id', Number(characterId) + 1);
-        characterId = Number(characterId) + 1;
-        window.history.pushState({}, '', '?' + urlParams.toString());
-        getData();
-    }
-    
-    else {
-        alert("this is last character");
-    }
-}
-
-prevCharacterButton.addEventListener("click", prevCharacter);
-nextCharacterButton.addEventListener("click", nextCharacter);
-
-getData()
+getData();

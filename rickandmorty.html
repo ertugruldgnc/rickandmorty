@@ -14,22 +14,68 @@
         <header class="siteHeader">
             <img src="http://bit.ly/3NmvK3R" alt="rick and morty">
         </header>
-        <main class="mainContent">
-            <section class="loadingState">
-                <h2>loading</h2>
-                <div class="spin"></div>
-            </section>
-            <section class="cardsContainer">
-            </section>
-            <nav class="pagination">
-                <button class="paginationButton" id="firstButton">&#8676</button>
-                <button class="paginationButton" id="prevButton">&#8592</button>
-                <div class="pages">  
-                </div>
-                <button class="paginationButton" id="nextButton">&#8594</button>
-                <button class="paginationButton" id="lastButton">&#8677</button>
-            </nav>
-        </main>
+        <div class="pageContainer">
+            <aside class="sideBar">
+                <search>
+                    <form id="filterOptions">
+                        <fieldset>
+                            <legend>Search</legend>
+                            <label>By Name
+                                <input type="search" name="searchName" class="inputs" id="nameInput">
+                            </label>
+                        </fieldset>
+                        <fieldset>
+                            <legend>Character Features</legend>
+                            <div>
+                                <label>Status
+                                    <select name="searchStatus" id="speciesStatus">
+                                        <option value="">All</option>
+                                        <option value="alive">Alive</option>
+                                        <option value="dead">Dead</option>
+                                        <option value="unknown">Unknown</option>
+                                    </select>
+                                </label>
+                            </div>
+                            <div>
+                                <label>Species
+                                    <select name="searchSpecies" id="speciesSelect">
+                                        <option value="">All</option>
+                                        <option value="human">Human</option>
+                                        <option value="alien">Alien</option>
+                                        <option value="humanoid">Humanoid</option>
+                                        <option value="poopybutthole">Poopybutthole</option>
+                                        <option value="mythological Creature">Mythological Creature</option>
+                                        <option value="animal">Animal</option>
+                                        <option value="robot">Robot</option>
+                                        <option value="cronenberg">Cronenberg</option>
+                                        <option value="disease">Disease</option>
+                                        <option value="unknown">Unknown</option>
+                                    </select>
+                                </label>
+                            </div>
+                        </fieldset>
+                        <button type="submit" id="submitButton">Filter</button>
+                        <button type="reset" id="resetButton">Home</button>
+                    </form>
+                </search>
+            </aside>
+            <main class="mainContent">
+                <section class="loadingState">
+                    <h2>loading</h2>
+                    <div class="spin"></div>
+                </section>
+                <section class="cardsContainer">
+                </section>
+                <nav class="pagination">
+                    <button class="paginationButton" id="firstButton">&#8676</button>
+                    <button class="paginationButton" id="prevButton">&#8592</button>
+                    <div class="pages">  
+                    </div>
+                    <button class="paginationButton" id="nextButton">&#8594</button>
+                    <button class="paginationButton" id="lastButton">&#8677</button>
+                </nav>
+            </main>
+        </div>
         <script type="module" src="rickandmorty.js"></script>
     </body>
 </html>

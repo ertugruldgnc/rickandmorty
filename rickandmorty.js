@@ -1,73 +1,106 @@
 import * as Main from './main.js';
 
+const sideBar = document.querySelector('.sideBar');
+const resetButton = document.querySelector('#resetButton');
+const filterOptions = document.querySelector('#filterOptions');
+const submitButton = document.querySelector('#submitButton')
+
 const cardsContainer = document.querySelector('.cardsContainer');
+
+const pages = document.querySelector('.pages');
 const firstButton = document.querySelector('#firstButton');
 const prevButton = document.querySelector('#prevButton');
 const nextButton = document.querySelector('#nextButton');
 const lastButton = document.querySelector('#lastButton');
-const pages = document.querySelector('.pages');
 
+let lastPageNumber = Number;
 let activePage = 1;
-let fetchingIds = [];
 
-async function getData() {
-    fetchingIds = [];
-
-    const firstCharacterOfPage = activePage * 12 - 11;
-    const lastCharacterOfPage = firstCharacterOfPage + 11;
-
-    for(let i = firstCharacterOfPage; i <= lastCharacterOfPage; i ++) {
-        fetchingIds.push(i);
-    }
-
-    const response = await fetch(Main.apiUrl + String(fetchingIds));
-    const data = await response.json();
-
-    Main.displayNone(Main.loadingState);
-    Main.displayFlex(Main.paginationBox);
-    renderCards(data);
-    pagination();
+let currentFilter = { 
+    nameFilter : "",
+    speciesFilter : "", 
+    statusFilter : ""
 }
 
-function renderCards(data){
+async function getData(selectedFilters) {
+    let url = [`${Main.apiUrl}?page=${activePage}`];
+
+    if(selectedFilters.nameFilter) {
+        url.push(`&name=${selectedFilters.nameFilter}`);
+    }
+
+    if(selectedFilters.speciesFilter) {
+        url.push(`&species=${selectedFilters.speciesFilter}`);
+    }
+
+    if(selectedFilters.statusFilter) {
+        url.push(`&status=${selectedFilters.statusFilter}`);
+    }
+
+    const response = await fetch(url.join(""));
+    const data = await response.json();
+    lastPageNumber = data.info.pages;
+
+    Main.displayNone(Main.loadingState);
+    Main.displayBlock(sideBar);
+    Main.displayFlex(Main.paginationBox);
+
+    renderCards(data.results);
+    disableButtons();
+    pagination();
+
+    currentFilter.searchBy = "";
+}
+
+async function renderCards(data){
     Main.clearContent(cardsContainer);
 
-    data.forEach(item => {
+    for (const item of data){
+        const response = await fetch(item.episode[0]);
+        const data = await response.json();
         const cardLink = document.createElement('a');
         const card = document.createElement('article');
         const imageBox = document.createElement('div');
+        const characterData = document.createElement('div');
         const nameBox = document.createElement('div');
-        const statusBox = document.createElement('div');
-        const speciesBox = document.createElement('div');
+        const statsBox = document.createElement('div');
+        const locationBox = document.createElement('div');
+        const locationHeader = document.createElement('h3');
+        const location = document.createElement('p');
+        const firstEpisodeBox = document.createElement('div');
+        const firstEpisodeHeader = document.createElement('h3');
+        const firstEpisode = document.createElement('p');
         const characterImg = document.createElement('img');
         const characterName = document.createElement('h2');
-        const characterStatusHeader = document.createElement('h3');
         const characterStatus = document.createElement('p');
-        const characterSpeciesHeader = document.createElement('h3');
         const characterSpecies = document.createElement('p');
 
         cardLink.href = `features.html?id=${item.id}`;
         card.className = "card";
+        characterData.className = "characterData";
         imageBox.className = "imgBox";
         nameBox.className = "nameBox";
-        statusBox.className = "statusBox";
-        speciesBox.className = "speciesBox";
-
+        statsBox.className = "statsBox";
+        
+        locationHeader.textContent  = "Last known location:";
+        location.textContent = item.location.name;
+        firstEpisodeHeader.textContent  = "First seen in:";
+        firstEpisode.textContent = data.name;
         characterImg.src = item.image;
         characterName.textContent = item.name;
-        characterStatusHeader.textContent = "Status";
         characterStatus.textContent = item.status;
-        characterSpeciesHeader.textContent = "Species";
         characterSpecies.textContent = item.species;
 
+        locationBox.append(locationHeader, location);
+        firstEpisodeBox.append(firstEpisodeHeader, firstEpisode);
         imageBox.appendChild(characterImg);
         nameBox.appendChild(characterName);
-        statusBox.appendChild(characterStatus);
-        speciesBox.appendChild(characterSpecies);
-        card.append(imageBox, nameBox, statusBox, speciesBox);
+        statsBox.append(`${item.status} - ${item.species}`);
+        characterData.append(nameBox, statsBox, locationBox, firstEpisodeBox);
+        card.append(imageBox, characterData);
         cardLink.appendChild(card);
         cardsContainer.appendChild(cardLink);
-    });
+    };
 }
 
 function pagination() {
@@ -75,14 +108,22 @@ function pagination() {
 
     let firstButtonNumber = 1;
 
-     if (Main.lastPageNumber - activePage < 2) {
-        firstButtonNumber = Main.lastPageNumber - 4;
+    if (lastPageNumber - activePage < 2 && lastPageNumber >= 5) {
+        firstButtonNumber = lastPageNumber - 4;
     } else if (activePage > 3) {
         firstButtonNumber = Math.max(1, activePage - 2);
     }
 
     for(let i = firstButtonNumber; i < (firstButtonNumber + 5); i++) {
+        if(i > lastPageNumber){
+            return;
+        }
+
         const pageButton = document.createElement('button');
+        if(i === activePage){
+            pageButton.style.backgroundColor = 'rgb(175, 249, 136)'
+        }
+
         pageButton.className = "paginationButton";
         pageButton.textContent = i;
 
@@ -91,7 +132,7 @@ function pagination() {
             Main.clearContent(cardsContainer);
             Main.displayNone(Main.paginationBox);
             Main.displayFlex(Main.loadingState);
-            getData();
+            getData(currentFilter);
         });
 
         pages.appendChild(pageButton);
@@ -100,35 +141,74 @@ function pagination() {
 
 function firstPage() {
     activePage = 1;
-    getData();
+    updateData()
 }
 
 function lastPage() {
-    activePage = Main.lastPageNumber;
-    getData();
+    activePage = lastPageNumber;
+    updateData()
 
 }
 
 function prev( ){
-    if(activePage == 1) {
-        alert("this is first page");
-    } else {
-        activePage = activePage - 1;
-        getData();
-    }
+    activePage = activePage - 1;
+    updateData()
 }
 
 function next() {
-    if(activePage == Main.lastPageNumber) {
-        alert("this is last page");
-    } else {
     activePage = activePage + 1;
-    getData()}
+    updateData()
 }
+
+function disableButtons(){
+    if(activePage === 1){
+        firstButton.disabled = true;
+        prevButton.disabled = true;
+    } else {
+        firstButton.disabled = false;
+        prevButton.disabled = false;
+    } 
+        
+    if(activePage === lastPageNumber){
+        lastButton.disabled = true;
+        nextButton.disabled = true;
+    } else {
+        lastButton.disabled = false;
+        nextButton.disabled = false;
+    }
+    
+}
+function getFormData(){
+    const filters = new FormData(filterOptions);
+    const name = filters.get('searchName');
+    const species = filters.get('searchSpecies');
+    const status = filters.get('searchStatus');
+    currentFilter.nameFilter = name ;
+    currentFilter.speciesFilter = species ;
+    currentFilter.statusFilter = status;
+}
+
+function updateData(){
+    getFormData();
+    getData(currentFilter);
+}
+
+submitButton.addEventListener('click', (event) => {
+    event.preventDefault();
+    activePage = 1;
+    updateData();
+})  
+
+resetButton.addEventListener('click', (event) => {
+    event.preventDefault();
+    filterOptions.reset(); 
+    activePage = 1; 
+    updateData();
+}) 
 
 firstButton.addEventListener("click", firstPage);
 prevButton.addEventListener("click", prev);
 nextButton.addEventListener("click", next);
 lastButton.addEventListener("click", lastPage);
 
-getData();
+getData(currentFilter);

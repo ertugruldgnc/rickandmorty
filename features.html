@@ -16,39 +16,41 @@
                 <img src="http://bit.ly/3NmvK3R" alt="rick and morty">
             </a>
         </header>
-        <main class="mainContent">
-            <section class="loadingState">
-                <h2>loading</h2>
-                <div class="spin"></div>
-            </section>
-            <section class="featuresContainer">
-                <article class="features">
-                    <div class="imgBox">
-                        <img class="img" alt="Character Image">
-                    </div>
-                    <div class="nameBox">
-                        <h2 class="name"></h2>
-                    </div>
-                    <div class="statusBox">
-                        <h3>Status</h3>
-                        <p class="status"></p>
-                    </div>
-                    <div class="speciesBox">
-                        <h3>Species</h3>
-                        <p class="species"></p>
-                    </div>
-                </article>
-                <article class="episodes">
-                    <h3>Episodes</h3>
-                    <ul class="episodeList">
-                    </ul>
-                </article>
-            </section>
-                <nav class="pagination">
-                    <button class="paginationButton" id="prevCharacterButton">&#8592</button>
-                    <button class="paginationButton" id="nextCharacterButton">&#8594</button>
-                </nav>
-        </main>
+        <div class="pageContainer">
+            <main class="mainContent">
+                <section class="loadingState">
+                    <h2>loading</h2>
+                    <div class="spin"></div>
+                </section>
+                <section class="featuresContainer">
+                    <article class="features">
+                        <div class="imgBox">
+                            <img class="img" alt="Character Image">
+                        </div>
+                        <div class="nameBox">
+                            <h2 class="name"></h2>
+                        </div>
+                        <div class="statusBox">
+                            <h3>Status</h3>
+                            <p class="status"></p>
+                        </div>
+                        <div class="speciesBox">
+                            <h3>Species</h3>
+                            <p class="species"></p>
+                        </div>
+                    </article>
+                    <article class="episodes">
+                        <h3>Episodes</h3>
+                        <ul class="episodeList">
+                        </ul>
+                    </article>
+                </section>
+                    <nav class="pagination">
+                        <button class="paginationButton" id="prevCharacterButton">&#8592</button>
+                        <button class="paginationButton" id="nextCharacterButton">&#8594</button>
+                    </nav>
+            </main>
+        </div>
         <script type="module" src="features.js"></script>
     </body>
 </html>
