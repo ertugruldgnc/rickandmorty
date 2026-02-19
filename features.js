@@ -17,8 +17,10 @@ const nextCharacterButton = document.querySelector('#nextCharacterButton')
 async function getEpisodes(episodes) {
     const response = await fetch(`${episodeUrl}${episodes}`);
     const data = await response.json();
+
     const characterData = [].concat(data);
-    characterData.forEach(item => {
+    
+    characterData.forEach (item => {
         const episodeName = item.name;
         const episode = document.createElement('li');
         episode.className = "listElement";
@@ -37,8 +39,8 @@ function displayFeatures(data) {
 async function getData() {
     const response = await fetch(Main.apiUrl + characterId);
     
-    if(response.status == 404){
-        return
+    if (response.status == 404){
+        return;
     }
     
     const data = await response.json();
@@ -54,7 +56,7 @@ async function getData() {
     Main.displayFlex(Main.paginationBox);
 
     const episodeLinks = data.episode;
-    episodeLinks.forEach(item => {
+    episodeLinks.forEach (item => {
         let linkParts = item.split('/');
         let episodeID = linkParts.pop();
         episodes.push(episodeID)

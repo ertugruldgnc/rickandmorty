@@ -1,9 +1,9 @@
 import * as Main from './main.js';
 
 const sideBar = document.querySelector('.sideBar');
-const resetButton = document.querySelector('#resetButton');
 const filterOptions = document.querySelector('#filterOptions');
-const submitButton = document.querySelector('#submitButton')
+const resetButton = document.querySelector('#resetButton');
+const submitButton = document.querySelector('#submitButton');
 
 const cardsContainer = document.querySelector('.cardsContainer');
 
@@ -25,15 +25,15 @@ let currentFilter = {
 async function getData(selectedFilters) {
     let url = [`${Main.apiUrl}?page=${activePage}`];
 
-    if(selectedFilters.nameFilter) {
+    if (selectedFilters.nameFilter) {
         url.push(`&name=${selectedFilters.nameFilter}`);
     }
 
-    if(selectedFilters.speciesFilter) {
+    if (selectedFilters.speciesFilter) {
         url.push(`&species=${selectedFilters.speciesFilter}`);
     }
 
-    if(selectedFilters.statusFilter) {
+    if (selectedFilters.statusFilter) {
         url.push(`&status=${selectedFilters.statusFilter}`);
     }
 
@@ -48,16 +48,15 @@ async function getData(selectedFilters) {
     renderCards(data.results);
     disableButtons();
     pagination();
-
-    currentFilter.searchBy = "";
 }
 
-async function renderCards(data){
+async function renderCards(data) {
     Main.clearContent(cardsContainer);
 
     for (const item of data){
         const response = await fetch(item.episode[0]);
         const data = await response.json();
+
         const cardLink = document.createElement('a');
         const card = document.createElement('article');
         const imageBox = document.createElement('div');
@@ -114,13 +113,13 @@ function pagination() {
         firstButtonNumber = Math.max(1, activePage - 2);
     }
 
-    for(let i = firstButtonNumber; i < (firstButtonNumber + 5); i++) {
-        if(i > lastPageNumber){
+    for (let i = firstButtonNumber; i < (firstButtonNumber + 5); i++) {
+        if (i > lastPageNumber){
             return;
         }
 
         const pageButton = document.createElement('button');
-        if(i === activePage){
+        if (i === activePage){
             pageButton.style.backgroundColor = 'rgb(175, 249, 136)'
         }
 
@@ -141,27 +140,27 @@ function pagination() {
 
 function firstPage() {
     activePage = 1;
-    updateData()
+    updateData();
 }
 
 function lastPage() {
     activePage = lastPageNumber;
-    updateData()
+    updateData();
 
 }
 
-function prev( ){
+function prev( ) {
     activePage = activePage - 1;
-    updateData()
+    updateData();
 }
 
 function next() {
     activePage = activePage + 1;
-    updateData()
+    updateData();
 }
 
 function disableButtons(){
-    if(activePage === 1){
+    if (activePage === 1){
         firstButton.disabled = true;
         prevButton.disabled = true;
     } else {
@@ -169,7 +168,7 @@ function disableButtons(){
         prevButton.disabled = false;
     } 
         
-    if(activePage === lastPageNumber){
+    if (activePage === lastPageNumber){
         lastButton.disabled = true;
         nextButton.disabled = true;
     } else {
@@ -178,17 +177,18 @@ function disableButtons(){
     }
     
 }
-function getFormData(){
+function getFormData() {
     const filters = new FormData(filterOptions);
     const name = filters.get('searchName');
     const species = filters.get('searchSpecies');
     const status = filters.get('searchStatus');
+    
     currentFilter.nameFilter = name ;
     currentFilter.speciesFilter = species ;
     currentFilter.statusFilter = status;
 }
 
-function updateData(){
+function updateData() {
     getFormData();
     getData(currentFilter);
 }

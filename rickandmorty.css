@@ -91,6 +91,8 @@ select, input{
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
     gap: var(--mdSpacing);
+    align-content: start;
+    flex-grow: 1;
 }
 
 .card {
@@ -114,8 +116,12 @@ select, input{
     box-shadow: 0 0 15px 2px var(--shadowColor);
 }
 
+.nameBox{
+    overflow-wrap: break-word;
+}
+
 .imgBox {
-    width: 200;
+    width: 200px;
     height: 200px;
     overflow: hidden;
     border-radius: var(--xsRadius);
@@ -164,6 +170,7 @@ select, input{
 
 .featuresContainer{
     display: none;
+    flex-grow: 1;
     border-style: solid;
     border-width: 2px;
     border-radius: var(--mdRadius);
@@ -172,11 +179,13 @@ select, input{
     color: var(--textColor);
     flex-direction: row;
     gap: var(--mdSpacing);
+    width: 700px;
 }
 
 .features{
     display: flex;
     flex-direction: column;
+    width: 200px;
     gap: var(--mdSpacing);
 }
 
